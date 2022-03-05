@@ -1,0 +1,3 @@
+/home/meysam/test-apps/OpenCV3-by-Example/seg/build/CMakeFiles/rebuild_cache.dir
+/home/meysam/test-apps/OpenCV3-by-Example/seg/build/CMakeFiles/edit_cache.dir
+/home/meysam/test-apps/OpenCV3-by-Example/seg/build/CMakeFiles/seg.dir

@@ -1,0 +1,3 @@
+/home/meysam/test-apps/OpenCV3-by-Example/imread/build/CMakeFiles/rebuild_cache.dir
+/home/meysam/test-apps/OpenCV3-by-Example/imread/build/CMakeFiles/edit_cache.dir
+/home/meysam/test-apps/OpenCV3-by-Example/imread/build/CMakeFiles/imread.dir
