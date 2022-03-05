@@ -112,7 +112,7 @@ std::vector< std::vector<float> >  ExtractFeatures(cv::Mat img,
             }
             
             cv::imshow("MASK",mask*255);
-            cv::waitKey(200);
+            cv::waitKey(1);
         }
     }
     return out;
@@ -169,15 +169,61 @@ int main (int argc, const char ** argv)
 
     int nb_for_test = 20;
 
-    // cv::Mat frame = cv::imread(argv[1]);
-    // cv::cvtColor(frame,frame,cv::COLOR_BGR2GRAY);
+ 
+
+    readFolderAndExtractFeatures("../../data/nut/tuerca_%04d.pgm", 0, nb_for_test, data_train, lables_train, data_test, labels_test);
+	// Get and process the ring images
+	readFolderAndExtractFeatures("../../data/ring/arandela_%04d.pgm", 1, nb_for_test, data_train, lables_train, data_test, labels_test);
+	// get and process the screw images
+	readFolderAndExtractFeatures("../../data/screw/tornillo_%04d.pgm", 2, nb_for_test, data_train, lables_train, data_test, labels_test);
+
+    std::cout << "Num of train samples: " << data_train.size() << std::endl;
+
+	std::cout << "Num of test samples: " << labels_test.size() << std::endl;
+
+    cv::Mat mat_data_train(data_train.size()/2,2,CV_32FC1,&data_train[0]);
+    cv::Mat mat_labels_train(lables_train.size(),1,CV_32SC1,&lables_train[0]);
+
+    cv::Mat mat_data_test(data_test.size()/2,2,CV_32FC1,&data_test[0]);
+    cv::Mat mat_labels_test(labels_test.size(),1,CV_32FC1,&labels_test[0]);
+
     
-    // frame = preprocessImg(frame);
-    // cv::imshow("frame",frame);
-    // cv::waitKey(0);
+    /*
+    Ptr<TrainData> create(InputArray samples, int layout, InputArray responses,
+                                 InputArray varIdx=noArray(), InputArray sampleIdx=noArray(),
+                                 InputArray sampleWeights=noArray(), InputArray varType=noArray());
+                                 */
+    // cv::Ptr<cv::ml::TrainData> train_data_ptr = cv::ml::TrainData::create(mat_data_train,cv::ml::ROW_SAMPLE,
+    //                                                                 mat_labels_train);
     
-    std::vector<std::vector<float>> features = ExtractFeatures(frame);
-    // readFolderAndExtractFeatures()
+    svm = cv::ml::SVM::create();
+    std::cout<<"mat_data_train"<<mat_data_train.size() <<std::endl;
+    std::cout<<"mat_labels_train"<<mat_labels_train.size() <<std::endl;
+    svm->setTermCriteria(cv::TermCriteria(cv::TermCriteria::MAX_ITER, 100, 1e-6));
+    svm->setC(0.1);
+    svm->setKernel(cv::ml::SVM::CHI2);
+    // cv::ml::VariableTypes vt()
+    // svm->train(train_data_pt)
+    // svm->train(train_data_ptr,);
+
+    svm->train(mat_data_train,cv::ml::ROW_SAMPLE,mat_labels_train);
+    std::cout<<"here"<<std::endl;
+    std::cout << "Evaluation" << std::endl;
+	std::cout << "==========" << std::endl;
+
+    cv::Mat test_perdict;
+
+    svm->predict(mat_data_test,test_perdict);
+
+    std::cout << "Prediction Done" << std::endl;
+
+    cv::Mat error_mat = test_perdict!=mat_labels_test;
+    float err = (100.0f*cv::countNonZero(error_mat) ) / labels_test.size();
+
+    std::cout << "Error: " << err << "\%" << std::endl;
+
+
+
 
 
 
