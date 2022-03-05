@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-PROJECT(seg)
+PROJECT(cls)
 
 find_package(OpenCV REQUIRED)
 
