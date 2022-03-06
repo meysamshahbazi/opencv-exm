@@ -29,7 +29,7 @@ int main(int argc,char * argv[] )
     cv::Ptr<cv::BackgroundSubtractor> pbs;
     if(parser.get<std::string>("algo")=="MOG2")
     {
-        pbs = cv::createBackgroundSubtractorMOG2();
+        pbs = cv::createBackgroundSubtractorMOG2(100);
     }
     else
     {
