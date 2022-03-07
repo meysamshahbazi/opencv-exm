@@ -27,14 +27,15 @@ int main(int argc,char * argv[] )
     }
 
     cv::Ptr<cv::BackgroundSubtractor> pbs;
-    if(parser.get<std::string>("algo")=="MOG2")
-    {
-        pbs = cv::createBackgroundSubtractorMOG2(100);
-    }
-    else
-    {
-        pbs = cv::createBackgroundSubtractorKNN();
-    }
+     pbs = cv::createBackgroundSubtractorMOG2();
+    // if(parser.get<std::string>("algo")=="MOG2")
+    // {
+    //     pbs = cv::createBackgroundSubtractorMOG2(50);
+    // }
+    // else
+    // {
+    //     pbs = cv::createBackgroundSubtractorKNN();
+    // }
 
     cv::VideoCapture vc(argv[1]);
 
@@ -61,7 +62,7 @@ int main(int argc,char * argv[] )
         pbs->apply(frame,fgmask);
 
         cv::imshow("Frame", frame);
-        // cv::imshow("FG Mask", fgmask);
+        cv::imshow("FG Mask", fgmask);
         
         fgmask.convertTo(fgmask2,CV_8UC3);
 
@@ -75,8 +76,8 @@ int main(int argc,char * argv[] )
 
         // cv::add(frame,fgmask,res);
         
-        cv::Mat o = cv::Mat::ones(frame.size[0],frame.size[1],frame.type());
-        o = 127*o;
+        // cv::Mat o = cv::Mat::ones(frame.size[0],frame.size[1],frame.type());
+        // o = 127*o;
         std::vector<cv::Mat> v;
         v.push_back(fgmask);
         v.push_back(fgmask);
@@ -84,10 +85,14 @@ int main(int argc,char * argv[] )
         cv::merge(v,fgmask2);
         // std::cout<<fgmask2.depth()<<std::endl;
         // cv::Mat o = cv:::Mat::one
-        cv::add(frame,fgmask2,res);
-        // cv::add(frame,o,res,255-fgmask);
+
+        cv::Mat o(frame.size[0],frame.size[1],CV_8UC3,cv::Scalar(0,0,255));
+        // cv::add(frame,fgmask2,res);
+        cv::threshold(fgmask,fgmask2,129,255,cv::THRESH_BINARY);
+        cv::add(frame,o,res,255-fgmask2);
 
         cv::imshow("res",res);
+        // std::cout<<fgmask<<std::endl;
         //get the input from the keyboard
         int keyboard = cv::waitKey(30);
         if (keyboard == 'q' || keyboard == 27)
